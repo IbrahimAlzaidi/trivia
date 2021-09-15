@@ -13,4 +13,12 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+    <style name="text_choice" parent="">
+        <item name="backgroundTintMode">@color/white</item>
+        <item name="android:layout_marginHorizontal" tools:targetApi="o">16dp</item>
+        <item name="android:paddingVertical" tools:targetApi="o">16dp</item>
+        <item name="cornerSize">50dp</item>
+        <item name="color">@color/white</item>
+        <item name="android:paddingHorizontal" tools:targetApi="o">16dp</item>
+    </style>
 </resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="text_choice" parent="">
+        <item name="backgroundTintMode">@color/white</item>
+        <item name="android:layout_marginHorizontal">16dp</item>
+        <item name="android:paddingVertical">16dp</item>
+        <item name="cornerSize">50dp</item>
+        <item name="color">@color/white</item>
+        <item name="android:paddingHorizontal">16dp</item>
+    </style>
+</resources>
