@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:textSize="24sp"
+        android:layout_marginHorizontal="8dp"
         android:gravity="center_horizontal"
         android:textColor="@color/black"
         android:text="You Made it!! , congratss!\nWe don't have losers here; everyone is a winner.here, have a cup of coffee"
