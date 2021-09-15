@@ -42,6 +42,8 @@ class questionFragment:BaseFragment<FragmentQuestionsBinding>() {
                             binding?.textSecondAnswer?.text = info?.incorrect_answers?.get(0)
                             binding?.textThirdAnswer?.text = info?.incorrect_answers?.get(1)
                             binding?.textFourthAnswer?.text = info?.incorrect_answers?.get(2)
+                            isEnabledButton(false)
+
                         })
                     }
 
@@ -50,6 +52,12 @@ class questionFragment:BaseFragment<FragmentQuestionsBinding>() {
                 }
 
             })
+    }
+    private fun isEnabledButton(value:Boolean){
+        when(value){
+            false-> binding?.buttonNext?.isEnabled = false
+            true -> binding?.buttonNext?.isEnabled = true
+        }
     }
 
     private fun getNextQuestion() {
@@ -81,6 +89,8 @@ class questionFragment:BaseFragment<FragmentQuestionsBinding>() {
             binding?.textSecondAnswer?.setBackgroundResource(R.drawable.wrong_answer)
             binding?.textThirdAnswer?.setBackgroundResource(R.drawable.wrong_answer)
             binding?.textFourthAnswer?.setBackgroundResource(R.drawable.wrong_answer)
+            isEnabledButton(true)
+
 
 
         }
@@ -89,6 +99,8 @@ class questionFragment:BaseFragment<FragmentQuestionsBinding>() {
             binding?.textSecondAnswer?.setBackgroundResource(R.drawable.text_background)
             binding?.textThirdAnswer?.setBackgroundResource(R.drawable.text_background)
             binding?.textFourthAnswer?.setBackgroundResource(R.drawable.text_background)
+            isEnabledButton(true)
+
         }
 
 
