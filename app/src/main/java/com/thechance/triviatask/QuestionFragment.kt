@@ -8,8 +8,10 @@ import okhttp3.*
 import java.io.IOException
 
 
-class questionFragment:BaseFragment<FragmentQuestionsBinding>() {
-    val client = OkHttpClient()
+class QuestionFragment:BaseFragment<FragmentQuestionsBinding>() {
+    private val client = OkHttpClient()
+    var index:Int = 0
+    private val winFragment = WinFragment()
     override val LOG_TAG: String
         get() = javaClass.simpleName
     override val bindingInflater: (LayoutInflater) -> FragmentQuestionsBinding = FragmentQuestionsBinding::inflate
@@ -25,7 +27,10 @@ class questionFragment:BaseFragment<FragmentQuestionsBinding>() {
 
 
     private fun showInfo() {
-            val url = "https://opentdb.com/api.php?amount=10&category=10&difficulty=easy&type=multiple"
+        if (index>=10) setFragment()else {
+
+            val url =
+                "https://opentdb.com/api.php?amount=10&category=10&difficulty=easy&type=multiple"
             val request = Request.Builder().url(url).build()
             client.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
@@ -33,18 +38,20 @@ class questionFragment:BaseFragment<FragmentQuestionsBinding>() {
                 }
 
                 override fun onResponse(call: Call, response: Response) {
-                    val body = response.body?.string().let { jsonString ->
+                    response.body?.string().let { jsonString ->
                         val homeInfo = Gson().fromJson(jsonString, TriviaQuestion::class.java)
-                        val info = homeInfo.results?.toMutableList()?.get(0)
-                        activity?.runOnUiThread(Runnable {
+                        val info = homeInfo.results?.toMutableList()?.get(index)
+                        activity?.runOnUiThread {
                             binding?.textQuestion?.text = info?.question
                             binding?.textFirstAnswer?.text = info?.correct_answer
                             binding?.textSecondAnswer?.text = info?.incorrect_answers?.get(0)
                             binding?.textThirdAnswer?.text = info?.incorrect_answers?.get(1)
                             binding?.textFourthAnswer?.text = info?.incorrect_answers?.get(2)
-                            isEnabledButton(false)
-
-                        })
+                            binding?.textPoints?.text = index.toString()
+                            println(index)
+                            isEnabledButton(value = false)
+                        }
+                        index++
                     }
 
 
@@ -52,7 +59,16 @@ class questionFragment:BaseFragment<FragmentQuestionsBinding>() {
                 }
 
             })
+            //end of (if-else) statement
+        }
     }
+    private fun setFragment() {
+        requireActivity().supportFragmentManager.beginTransaction()
+            .add(R.id.container,winFragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
     private fun isEnabledButton(value:Boolean){
         when(value){
             false-> binding?.buttonNext?.isEnabled = false

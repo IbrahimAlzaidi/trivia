@@ -6,7 +6,7 @@ import com.thechance.triviatask.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding :ActivityMainBinding
-    private  val fragmentQuestion = questionFragment()
+    private  val fragmentQuestion = QuestionFragment()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
