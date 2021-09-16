@@ -7,7 +7,6 @@ import android.widget.TextView
 import com.google.gson.Gson
 import com.thechance.triviatask.databinding.FragmentQuestionsBinding
 import okhttp3.*
-import org.w3c.dom.Text
 import java.io.IOException
 
 
@@ -32,7 +31,7 @@ class QuestionFragment:BaseFragment<FragmentQuestionsBinding>() {
 
 
     private fun showInfo() {
-        if (index>=10) setFragment()else {
+        if (index>=10) displayWinFragment()else {
 
             val url =
                 "https://opentdb.com/api.php?amount=10&category=10&difficulty=easy&type=multiple"
@@ -77,10 +76,10 @@ class QuestionFragment:BaseFragment<FragmentQuestionsBinding>() {
             //end of (if-else) statement
         }
     }
-    private fun setFragment() {
+    private fun displayWinFragment() {
         val winFragment = WinFragment()
         val bundle= Bundle()
-        bundle.putInt("points",point)
+        bundle.putInt(Constatnt.POINTS,point)
         winFragment.arguments = bundle
         requireActivity().supportFragmentManager.beginTransaction()
             .add(R.id.container,winFragment)
