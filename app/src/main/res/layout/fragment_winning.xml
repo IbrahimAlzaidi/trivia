@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
+
     <View
         android:id="@+id/view"
         android:layout_width="match_parent"
@@ -19,11 +20,16 @@
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:layout_margin="24dp"
-        android:textSize="18sp"
+        android:textSize="16sp"
+        android:textAllCaps="false"
+        tools:text="Congrats!! you wonbyou actually did it  "
+        android:gravity="center"
+        android:maxLines="2"
+        android:textColor="@color/black"
+        android:background="@drawable/text_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/text_background"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/text_points"
@@ -32,12 +38,11 @@
         android:layout_marginHorizontal="8dp"
         android:layout_marginTop="16dp"
         android:gravity="center_horizontal"
-        android:text=""
-        android:textColor="@color/black"
+        android:elevation="8dp"
+        android:textColor="@color/white"
         android:textSize="@dimen/text_big_size"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/text_result"
+        app:layout_constraintStart_toStartOf="@+id/text_result"
         app:layout_constraintTop_toBottomOf="@+id/text_result" />
 
     <androidx.appcompat.widget.AppCompatButton
