@@ -6,13 +6,17 @@ import android.widget.TextView
 import com.google.gson.Gson
 import com.thechance.triviatask.databinding.FragmentQuestionsBinding
 import okhttp3.*
+import org.w3c.dom.Text
 import java.io.IOException
 
 
 class QuestionFragment:BaseFragment<FragmentQuestionsBinding>() {
     private val client = OkHttpClient()
     var index:Int = 0
+    var point:Int = 0
     private val winFragment = WinFragment()
+    var correctAnswer = ""
+    var answerQuestion = mutableListOf<String?>()
     override val LOG_TAG: String
         get() = javaClass.simpleName
     override val bindingInflater: (LayoutInflater) -> FragmentQuestionsBinding = FragmentQuestionsBinding::inflate
@@ -43,12 +47,13 @@ class QuestionFragment:BaseFragment<FragmentQuestionsBinding>() {
                     response.body?.string().let { jsonString ->
                         val homeInfo = Gson().fromJson(jsonString, TriviaQuestion::class.java)
                         val info = homeInfo.results?.toMutableList()?.get(index)
-                        var answerQuestion = mutableListOf(
+                         answerQuestion = mutableListOf(
                             info?.incorrect_answers?.get(0),
                             info?.incorrect_answers?.get(1),
                             info?.incorrect_answers?.get(2),
                             info?.correct_answer
                         ).shuffled().toMutableList()
+                        correctAnswer = info?.correct_answer.toString()
                         activity?.runOnUiThread {
                             binding?.textQuestion?.text = info?.question
                             binding?.textFirstAnswer?.text = answerQuestion[0]
@@ -57,10 +62,11 @@ class QuestionFragment:BaseFragment<FragmentQuestionsBinding>() {
                             binding?.textFourthAnswer?.text = answerQuestion[3]
                             binding?.textPoints?.text = index.toString()
 
-                            println(index)
+                            //println(index)
                             isEnabledButton(value = false)
                         }
                         index++
+                        println(info?.correct_answer!!)
                     }
 
 
@@ -99,15 +105,22 @@ class QuestionFragment:BaseFragment<FragmentQuestionsBinding>() {
     private fun getCorrectAnswer() {
         binding?.textFirstAnswer?.setOnClickListener {
             getAnswer(binding?.textFirstAnswer!!)
+            countPoints(binding?.textFirstAnswer!!)
         }
         binding?.textSecondAnswer?.setOnClickListener {
             getAnswer(binding?.textSecondAnswer!!)
+            countPoints(binding?.textSecondAnswer!!)
+
         }
         binding?.textThirdAnswer?.setOnClickListener {
             getAnswer(binding?.textThirdAnswer!!)
+            countPoints(binding?.textThirdAnswer!!)
+
         }
         binding?.textFourthAnswer?.setOnClickListener {
             getAnswer(binding?.textFourthAnswer!!)
+            countPoints(binding?.textFourthAnswer!!)
+
         }
     }
 
@@ -127,7 +140,11 @@ class QuestionFragment:BaseFragment<FragmentQuestionsBinding>() {
         binding?.textThirdAnswer?.setBackgroundResource(R.drawable.text_background)
         binding?.textFourthAnswer?.setBackgroundResource(R.drawable.text_background)
     }
+    private fun countPoints(answerText:TextView){
+        if (answerText.text == correctAnswer)
+            point++
+        println("POINTS: $point")
 
-
+    }
 
 }
