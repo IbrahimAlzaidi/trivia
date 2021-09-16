@@ -2,6 +2,7 @@ package com.thechance.triviatask
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.widget.TextView
 import com.google.gson.Gson
 import com.thechance.triviatask.databinding.FragmentQuestionsBinding
 import okhttp3.*
@@ -37,17 +38,25 @@ class QuestionFragment:BaseFragment<FragmentQuestionsBinding>() {
                     println("FAILED , ${e.message.toString()}")
                 }
 
+
                 override fun onResponse(call: Call, response: Response) {
                     response.body?.string().let { jsonString ->
                         val homeInfo = Gson().fromJson(jsonString, TriviaQuestion::class.java)
                         val info = homeInfo.results?.toMutableList()?.get(index)
+                        var answerQuestion = mutableListOf(
+                            info?.incorrect_answers?.get(0),
+                            info?.incorrect_answers?.get(1),
+                            info?.incorrect_answers?.get(2),
+                            info?.correct_answer
+                        ).shuffled().toMutableList()
                         activity?.runOnUiThread {
                             binding?.textQuestion?.text = info?.question
-                            binding?.textFirstAnswer?.text = info?.correct_answer
-                            binding?.textSecondAnswer?.text = info?.incorrect_answers?.get(0)
-                            binding?.textThirdAnswer?.text = info?.incorrect_answers?.get(1)
-                            binding?.textFourthAnswer?.text = info?.incorrect_answers?.get(2)
+                            binding?.textFirstAnswer?.text = answerQuestion[0]
+                            binding?.textSecondAnswer?.text = answerQuestion[1]
+                            binding?.textThirdAnswer?.text = answerQuestion[2]
+                            binding?.textFourthAnswer?.text = answerQuestion[3]
                             binding?.textPoints?.text = index.toString()
+
                             println(index)
                             isEnabledButton(value = false)
                         }
@@ -77,7 +86,9 @@ class QuestionFragment:BaseFragment<FragmentQuestionsBinding>() {
     }
 
     private fun getNextQuestion() {
-
+        binding?.answerLinearLayout?.setOnClickListener {
+            isEnabledButton(true)
+        }
         binding?.buttonNext?.setOnClickListener {
             showInfo()
             getDefaultStyle()
@@ -87,37 +98,36 @@ class QuestionFragment:BaseFragment<FragmentQuestionsBinding>() {
     @SuppressLint("ResourceType")
     private fun getCorrectAnswer() {
         binding?.textFirstAnswer?.setOnClickListener {
-            getAnswer()
+            getAnswer(binding?.textFirstAnswer!!)
         }
         binding?.textSecondAnswer?.setOnClickListener {
-            getAnswer()
+            getAnswer(binding?.textSecondAnswer!!)
         }
         binding?.textThirdAnswer?.setOnClickListener {
-            getAnswer()
+            getAnswer(binding?.textThirdAnswer!!)
         }
         binding?.textFourthAnswer?.setOnClickListener {
-            getAnswer()
+            getAnswer(binding?.textFourthAnswer!!)
         }
     }
 
-        private fun getAnswer() {
-            binding?.textFirstAnswer?.setBackgroundResource(R.drawable.correct_answer)
-            binding?.textSecondAnswer?.setBackgroundResource(R.drawable.wrong_answer)
-            binding?.textThirdAnswer?.setBackgroundResource(R.drawable.wrong_answer)
-            binding?.textFourthAnswer?.setBackgroundResource(R.drawable.wrong_answer)
+        private fun getAnswer(textView: TextView) {
+            when(textView){
+                binding?.textFirstAnswer -> binding?.textFirstAnswer!!.setBackgroundResource(R.drawable.correct_answer)
+                binding?.textSecondAnswer -> binding?.textSecondAnswer!!.setBackgroundResource(R.drawable.correct_answer)
+                binding?.textThirdAnswer -> binding?.textThirdAnswer!!.setBackgroundResource(R.drawable.correct_answer)
+                binding?.textFourthAnswer -> binding?.textFourthAnswer!!.setBackgroundResource(R.drawable.correct_answer)
+            }
             isEnabledButton(true)
-
-
-
         }
-        private fun getDefaultStyle(){
-            binding?.textFirstAnswer?.setBackgroundResource(R.drawable.text_background)
-            binding?.textSecondAnswer?.setBackgroundResource(R.drawable.text_background)
-            binding?.textThirdAnswer?.setBackgroundResource(R.drawable.text_background)
-            binding?.textFourthAnswer?.setBackgroundResource(R.drawable.text_background)
-            isEnabledButton(true)
 
-        }
+    private fun getDefaultStyle(){
+        binding?.textFirstAnswer?.setBackgroundResource(R.drawable.text_background)
+        binding?.textSecondAnswer?.setBackgroundResource(R.drawable.text_background)
+        binding?.textThirdAnswer?.setBackgroundResource(R.drawable.text_background)
+        binding?.textFourthAnswer?.setBackgroundResource(R.drawable.text_background)
+    }
+
 
 
 }
