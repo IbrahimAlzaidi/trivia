@@ -1,6 +1,7 @@
 package com.thechance.triviatask
 
 import android.annotation.SuppressLint
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.TextView
 import com.google.gson.Gson
@@ -14,7 +15,6 @@ class QuestionFragment:BaseFragment<FragmentQuestionsBinding>() {
     private val client = OkHttpClient()
     var index:Int = 0
     var point:Int = 0
-    private val winFragment = WinFragment()
     var correctAnswer = ""
     var answerQuestion = mutableListOf<String?>()
     override val LOG_TAG: String
@@ -78,6 +78,10 @@ class QuestionFragment:BaseFragment<FragmentQuestionsBinding>() {
         }
     }
     private fun setFragment() {
+        val winFragment = WinFragment()
+        val bundle= Bundle()
+        bundle.putInt("points",point)
+        winFragment.arguments = bundle
         requireActivity().supportFragmentManager.beginTransaction()
             .add(R.id.container,winFragment)
             .addToBackStack(null)
