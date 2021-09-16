@@ -1,4 +1,4 @@
-package com.thechance.triviatask
+package com.thechance.triviatask.ui.fragments
 
 import android.os.Bundle
 import android.util.Log

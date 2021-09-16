@@ -1,8 +1,10 @@
-package com.thechance.triviatask
+package com.thechance.triviatask.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.thechance.triviatask.R
 import com.thechance.triviatask.databinding.ActivityMainBinding
+import com.thechance.triviatask.ui.fragments.QuestionFragment
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding :ActivityMainBinding

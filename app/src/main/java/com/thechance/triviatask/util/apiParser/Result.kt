@@ -1,4 +1,4 @@
-package com.thechance.triviatask
+package com.thechance.triviatask.util.apiParser
 
 data class Result(
     val category: String?,

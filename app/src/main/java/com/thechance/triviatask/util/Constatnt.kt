@@ -1,4 +1,4 @@
-package com.thechance.triviatask
+package com.thechance.triviatask.util
 
 object Constatnt {
     const val POINTS ="points"

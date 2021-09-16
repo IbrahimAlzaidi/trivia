@@ -1,16 +1,19 @@
-package com.thechance.triviatask
+package com.thechance.triviatask.ui.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.TextView
 import com.google.gson.Gson
+import com.thechance.triviatask.util.Constatnt
+import com.thechance.triviatask.R
+import com.thechance.triviatask.util.apiParser.TriviaQuestion
 import com.thechance.triviatask.databinding.FragmentQuestionsBinding
 import okhttp3.*
 import java.io.IOException
 
 
-class QuestionFragment:BaseFragment<FragmentQuestionsBinding>() {
+class QuestionFragment: BaseFragment<FragmentQuestionsBinding>() {
     private val client = OkHttpClient()
     var index:Int = 0
     var point:Int = 0

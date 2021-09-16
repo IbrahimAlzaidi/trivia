@@ -1,16 +1,13 @@
-package com.thechance.triviatask
+package com.thechance.triviatask.ui.fragments
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import com.thechance.triviatask.R
 import com.thechance.triviatask.databinding.FragmentWinningBinding
+import com.thechance.triviatask.util.Constatnt
 
-class WinFragment:BaseFragment<FragmentWinningBinding>() {
+class WinFragment: BaseFragment<FragmentWinningBinding>() {
     var points:Int = 0
     override val LOG_TAG: String
         get()= "win fragment"
@@ -51,7 +48,7 @@ class WinFragment:BaseFragment<FragmentWinningBinding>() {
             binding?.textResult?.text = Constatnt.WIN_TEXT
             binding?.textPoints?.text = points.toString()
         } else{
-            binding?.textResult?.text =Constatnt.LOSE_TEXT
+            binding?.textResult?.text = Constatnt.LOSE_TEXT
             binding?.textPoints?.text = points.toString()
         }
         }
