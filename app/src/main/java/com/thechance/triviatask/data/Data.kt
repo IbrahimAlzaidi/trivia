@@ -1,11 +1,12 @@
 package com.thechance.triviatask.data
 
 import android.util.Log
+import com.thechance.triviatask.util.model.TriviaQuestion
 import com.thechance.triviatask.util.model.TriviaResult
 import io.reactivex.rxjava3.core.Observable
 
 object Data {
-    fun getResultForQuiz(): Observable<State<TriviaResult>> {
+    fun getResultForQuiz(): Observable<State<TriviaQuestion>> {
         return getQuizInfo().flatMap() {
             when(it){
                 is State.Error ->{
@@ -22,7 +23,7 @@ object Data {
                 }
                 is State.Success ->{
                     Observable.create { emitter ->
-                        if (it.data.correctAnswer?.isEmpty() == true){
+                        if (it.data.itemTypes?.isEmpty() == true){
                             emitter.onNext(State.Error("Data not found"))
                             Log.i("Status.Success_if",it.toString())
                         } else {
@@ -34,7 +35,7 @@ object Data {
             }
         }
     }
-    private fun getQuizInfo(): Observable<State<TriviaResult>> {
+    private fun getQuizInfo(): Observable<State<TriviaQuestion>> {
         return Observable.create { emitter ->
             emitter.onNext(State.Loading)
             emitter.onNext(Network.makeRequestUsingOkhttp())

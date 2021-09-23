@@ -1,7 +1,9 @@
 package com.thechance.triviatask.ui.fragments
 
 import android.annotation.SuppressLint
+import android.app.ProgressDialog.show
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -27,13 +29,19 @@ class QuestionFragment: BaseFragment<FragmentQuestionsBinding>() {
     var index:Int = 0
     var point:Int = 0
     var correctAnswer = ""
-    var answerQuestion = mutableListOf<String?>()
     override val LOG_TAG: String
         get() = javaClass.simpleName
     override val bindingInflater: (LayoutInflater) -> FragmentQuestionsBinding = FragmentQuestionsBinding::inflate
 
     override fun setup() {
-        showInfo()
+        Data.getResultForQuiz().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe({
+            getResultForQuiz()
+        },
+            {
+                onError(it)
+            })
+
+       // getResultForQuiz()
         getNextQuestion()
         getCorrectAnswer()
     }
@@ -42,7 +50,7 @@ class QuestionFragment: BaseFragment<FragmentQuestionsBinding>() {
     }
 
 
-    private fun showInfo() {
+    /*private fun showInfo() {
         if (index>=10) displayWinFragment()else {
 
             val url =
@@ -59,7 +67,7 @@ class QuestionFragment: BaseFragment<FragmentQuestionsBinding>() {
                         val homeInfo = Gson().fromJson(jsonString, TriviaQuestion::class.java)
                         val info = homeInfo.itemTypes?.toMutableList()?.get(index)
                          answerQuestion = mutableListOf(
-                            info?.incorrectAnswers?.get(0),
+                           ),
                             info?.incorrectAnswers?.get(1),
                             info?.incorrectAnswers?.get(2),
                             info?.correctAnswer
@@ -87,7 +95,7 @@ class QuestionFragment: BaseFragment<FragmentQuestionsBinding>() {
             })
             //end of (if-else) statement
         }
-    }
+    }*/
     private fun displayWinFragment() {
         val winFragment = WinFragment()
         val bundle= Bundle()
@@ -111,7 +119,7 @@ class QuestionFragment: BaseFragment<FragmentQuestionsBinding>() {
             isEnabledButton(true)
         }
         binding?.buttonNext?.setOnClickListener {
-            showInfo()
+
             getDefaultStyle()
         }
     }
@@ -188,22 +196,43 @@ class QuestionFragment: BaseFragment<FragmentQuestionsBinding>() {
             Data.getResultForQuiz()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe()
+                .subscribe(::onQuizResult,::onError)
         )
+        println(disposable.toString())
     } // emitter the Data*
-    private fun onQuizResult(response: State<TriviaResult>){
+    private fun onQuizResult(response: State<TriviaQuestion>){
         when(response){
             is State.Error -> {
                 binding?.imageError?.show()//here View is adding for show image , so i hope u can edit it
             }
             is State.Loading -> {
                 binding?.progressLoading?.show()//here View is adding for show progress bar
+                println("----- LOADING !! -----\n")
             }
             is State.Success -> {
                 bindData(response.data)
+                println("----- SUCcESS !! -----\n")
             }
         }
     }//show think depending on the state>
+
+    private fun bindData(data: TriviaQuestion){
+
+        binding?.run {
+            val answerQuestion = mutableListOf(
+                data.itemTypes?.get(index)?.correctAnswer?.get(index),
+                data.itemTypes?.get(index)?.incorrectAnswers?.get(0),
+                data.itemTypes?.get(index)?.incorrectAnswers?.get(1),
+                data.itemTypes?.get(index)?.incorrectAnswers?.get(2)).toMutableList().shuffle().toString()
+
+            textQuestion.text = data.itemTypes?.get(index)?.question?.get(index).toString()
+            textFirstAnswer.text = answerQuestion[0].toString()[index].toString()
+            textSecondAnswer.text = answerQuestion[1].toString()[index].toString()
+            textThirdAnswer.text = answerQuestion[2].toString()[index].toString()
+            textFourthAnswer.text = answerQuestion[3].toString()[index].toString()
+        }
+
+    }//bind Data for Views*
     private fun View.show() {
         this.visibility = View.VISIBLE
     }//show  the progress bar and Image>
@@ -215,18 +244,14 @@ class QuestionFragment: BaseFragment<FragmentQuestionsBinding>() {
         binding?.progressLoading?.hide()
         binding?.textMaxTemp?.hide()
     }
-    private fun bindData(data: TriviaResult){
-        binding?.textQuestion?.text = data.question
-        binding?.textFirstAnswer?.text = answerQuestion[0]
-        binding?.textSecondAnswer?.text = answerQuestion[1]
-        binding?.textThirdAnswer?.text = answerQuestion[2]
-        binding?.textFourthAnswer?.text = answerQuestion[3]
-    }//bind Data for Views*
     override fun onDestroy() {
         super.onDestroy()
         disposable.dispose()
     }//to Destroy the Disposable Variable
 
+    private fun onError(e:Throwable){
+        binding?.imageError?.show()//here View is adding for show image , so i hope u can edit it
 
+    }
 
 }
