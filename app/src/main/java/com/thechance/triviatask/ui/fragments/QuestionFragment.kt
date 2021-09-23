@@ -5,27 +5,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
-import com.thechance.triviatask.util.Constatnt
 import com.thechance.triviatask.R
 import com.thechance.triviatask.data.Data
 import com.thechance.triviatask.data.State
-import com.thechance.triviatask.util.model.TriviaQuestion
 import com.thechance.triviatask.databinding.FragmentQuestionsBinding
+import com.thechance.triviatask.util.Constatnt
+import com.thechance.triviatask.util.model.TriviaQuestion
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
-import okhttp3.*
-import java.io.IOException
 
 
 class QuestionFragment : BaseFragment<FragmentQuestionsBinding>() {
     private val disposable: CompositeDisposable = CompositeDisposable()
 
-    private val client = OkHttpClient()
-    var index: Int = 0
-    var point: Int = 0
-    var correctAnswer = ""
-    var answerQuestion = mutableListOf<String?>()
+    private var index: Int = 0
+    private var point: Int = 0
+    private var correctAnswer = ""
+    private var answerQuestion = mutableListOf<String?>()
     override val LOG_TAG: String
         get() = javaClass.simpleName
     override val bindingInflater: (LayoutInflater) -> FragmentQuestionsBinding =
