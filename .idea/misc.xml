@@ -3,6 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidProjectsTut/trivia/app/src/main/res/layout/activity_main.xml" value="0.12360688956433637" />
+        <entry key="..\:/AndroidProjectsTut/trivia/app/src/main/res/layout/fragment_questions.xml" value="0.2" />
+        <entry key="..\:/AndroidProjectsTut/trivia/app/src/main/res/layout/fragment_winning.xml" value="0.12360688956433637" />
         <entry key="..\:/phoneApps/TriviaTask/app/src/main/res/drawable/background_shape.xml" value="0.2703125" />
         <entry key="..\:/phoneApps/TriviaTask/app/src/main/res/drawable/correct_answer.xml" value="0.2703125" />
         <entry key="..\:/phoneApps/TriviaTask/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.2703125" />
