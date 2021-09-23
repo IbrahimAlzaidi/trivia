@@ -5,27 +5,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
-import com.thechance.triviatask.util.Constatnt
 import com.thechance.triviatask.R
 import com.thechance.triviatask.data.Data
 import com.thechance.triviatask.data.State
-import com.thechance.triviatask.util.model.TriviaQuestion
 import com.thechance.triviatask.databinding.FragmentQuestionsBinding
+import com.thechance.triviatask.util.Constatnt
+import com.thechance.triviatask.util.model.TriviaQuestion
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
-import okhttp3.*
-import java.io.IOException
 
 
 class QuestionFragment : BaseFragment<FragmentQuestionsBinding>() {
     private val disposable: CompositeDisposable = CompositeDisposable()
 
-    private val client = OkHttpClient()
-    var index: Int = 0
-    var point: Int = 0
-    var correctAnswer = ""
-    var answerQuestion = mutableListOf<String?>()
+    private var index: Int = 0
+    private var point: Int = 0
+    private var correctAnswer = ""
+    private var answerQuestion = mutableListOf<String?>()
     override val LOG_TAG: String
         get() = javaClass.simpleName
     override val bindingInflater: (LayoutInflater) -> FragmentQuestionsBinding =
@@ -132,7 +129,7 @@ class QuestionFragment : BaseFragment<FragmentQuestionsBinding>() {
                 binding?.imageError?.show()//here View is adding for show image , so i hope u can edit it
             }
             is State.Loading -> {
-                binding?.progressLoading?.show()//here View is adding for show progress bar
+                binding?.progressLoading?.smoothToShow()//here View is adding for show progress bar
             }
             is State.Success -> {
                 bindData(response.data)
@@ -150,18 +147,19 @@ class QuestionFragment : BaseFragment<FragmentQuestionsBinding>() {
 
     private fun hideAllViews() {
         binding?.imageError?.hide()
-        binding?.progressLoading?.hide()
-        binding?.textMaxTemp?.hide()
+        binding?.progressLoading?.smoothToHide()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun bindData(data: TriviaQuestion) {
-        answerQuestion.add(data.itemTypes?.get(index)?.incorrectAnswers.toString())
+        answerQuestion.add(data.itemTypes?.get(index)?.incorrectAnswers?.get(index))
         if (index >= 10) displayWinFragment() else {
-            binding?.textQuestion?.text = data.itemTypes?.get(index)?.question
-            binding?.textFirstAnswer?.text = data.itemTypes?.get(index)?.correctAnswer
-            binding?.textSecondAnswer?.text = "answerQuestion[0].toString()"
-            binding?.textThirdAnswer?.text = data.itemTypes?.get(index)?.incorrectAnswers?.get(1)?.toString()
-            binding?.textFourthAnswer?.text = data.itemTypes?.get(index)?.incorrectAnswers?.get(2)?.toString()
+            binding?.textQuestion?.text = "Q${index}- ${data.itemTypes?.get(index)?.question}"
+            binding?.textFirstAnswer?.text = "1- ${data.itemTypes?.get(index)?.correctAnswer}"
+            binding?.textSecondAnswer?.text = "2- ${data.itemTypes?.get(index)?.incorrectAnswers?.get(0)}"
+            binding?.textThirdAnswer?.text = "3- ${data.itemTypes?.get(index)?.incorrectAnswers?.get(1)}"
+            binding?.textFourthAnswer?.text = "4- ${data.itemTypes?.get(index)?.incorrectAnswers?.get(2)}"
+            binding?.textPoints?.text = point.toString()
         }
     }//bind Data for Views*
 
@@ -170,4 +168,3 @@ class QuestionFragment : BaseFragment<FragmentQuestionsBinding>() {
         disposable.dispose()
     }//to Destroy the Disposable Variable
 }
-

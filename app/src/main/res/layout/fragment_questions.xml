@@ -140,8 +140,6 @@
         app:layout_constraintStart_toStartOf="@+id/view2"
         app:layout_constraintTop_toTopOf="@+id/view2"
         tools:text="1" />
-
-
     <Button
         android:id="@+id/button_next"
         android:layout_width="wrap_content"
@@ -154,7 +152,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/answer_linear_layout" />
-    <ProgressBar
+    <com.wang.avi.AVLoadingIndicatorView
         android:id="@+id/progress_loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -162,20 +160,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:indicatorName="BallSpinFadeLoaderIndicator"
+        app:indicatorColor="@color/dark_purple"
         android:visibility="gone"/>
-
-    <TextView
-        android:id="@+id/text_max_temp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"
-        tools:text="47 C" />
-
     <ImageView
         android:id="@+id/image_error"
         android:layout_width="128dp"
