@@ -154,14 +154,16 @@ class QuestionFragment : BaseFragment<FragmentQuestionsBinding>() {
         binding?.textMaxTemp?.hide()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun bindData(data: TriviaQuestion) {
-        answerQuestion.add(data.itemTypes?.get(index)?.incorrectAnswers.toString())
+        answerQuestion.add(data.itemTypes?.get(index)?.incorrectAnswers?.get(index))
         if (index >= 10) displayWinFragment() else {
-            binding?.textQuestion?.text = data.itemTypes?.get(index)?.question
-            binding?.textFirstAnswer?.text = data.itemTypes?.get(index)?.correctAnswer
-            binding?.textSecondAnswer?.text = "answerQuestion[0].toString()"
-            binding?.textThirdAnswer?.text = data.itemTypes?.get(index)?.incorrectAnswers?.get(1)?.toString()
-            binding?.textFourthAnswer?.text = data.itemTypes?.get(index)?.incorrectAnswers?.get(2)?.toString()
+            binding?.textQuestion?.text = "Q${index}- ${data.itemTypes?.get(index)?.question}"
+            binding?.textFirstAnswer?.text = "1- ${data.itemTypes?.get(index)?.correctAnswer}"
+            binding?.textSecondAnswer?.text = "2- ${data.itemTypes?.get(index)?.incorrectAnswers?.get(0)}"
+            binding?.textThirdAnswer?.text = "3- ${data.itemTypes?.get(index)?.incorrectAnswers?.get(1)}"
+            binding?.textFourthAnswer?.text = "4- ${data.itemTypes?.get(index)?.incorrectAnswers?.get(2)}"
+            binding?.textPoints?.text = point.toString()
         }
     }//bind Data for Views*
 
@@ -170,4 +172,3 @@ class QuestionFragment : BaseFragment<FragmentQuestionsBinding>() {
         disposable.dispose()
     }//to Destroy the Disposable Variable
 }
-
