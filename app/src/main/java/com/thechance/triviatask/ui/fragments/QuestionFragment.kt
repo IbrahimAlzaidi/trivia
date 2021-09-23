@@ -132,7 +132,7 @@ class QuestionFragment : BaseFragment<FragmentQuestionsBinding>() {
                 binding?.imageError?.show()//here View is adding for show image , so i hope u can edit it
             }
             is State.Loading -> {
-                binding?.progressLoading?.show()//here View is adding for show progress bar
+                binding?.progressLoading?.smoothToShow()//here View is adding for show progress bar
             }
             is State.Success -> {
                 bindData(response.data)
@@ -150,8 +150,7 @@ class QuestionFragment : BaseFragment<FragmentQuestionsBinding>() {
 
     private fun hideAllViews() {
         binding?.imageError?.hide()
-        binding?.progressLoading?.hide()
-        binding?.textMaxTemp?.hide()
+        binding?.progressLoading?.smoothToHide()
     }
 
     @SuppressLint("SetTextI18n")
