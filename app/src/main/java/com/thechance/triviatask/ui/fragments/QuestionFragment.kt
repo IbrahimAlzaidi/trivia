@@ -3,17 +3,26 @@ package com.thechance.triviatask.ui.fragments
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.TextView
 import com.google.gson.Gson
 import com.thechance.triviatask.util.Constatnt
 import com.thechance.triviatask.R
-import com.thechance.triviatask.util.apiParser.TriviaQuestion
+import com.thechance.triviatask.data.Data
+import com.thechance.triviatask.data.State
+import com.thechance.triviatask.util.model.TriviaQuestion
 import com.thechance.triviatask.databinding.FragmentQuestionsBinding
+import com.thechance.triviatask.util.model.TriviaResult
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import okhttp3.*
 import java.io.IOException
 
 
 class QuestionFragment: BaseFragment<FragmentQuestionsBinding>() {
+    private val disposable: CompositeDisposable = CompositeDisposable()
+
     private val client = OkHttpClient()
     var index:Int = 0
     var point:Int = 0
@@ -48,14 +57,14 @@ class QuestionFragment: BaseFragment<FragmentQuestionsBinding>() {
                 override fun onResponse(call: Call, response: Response) {
                     response.body?.string().let { jsonString ->
                         val homeInfo = Gson().fromJson(jsonString, TriviaQuestion::class.java)
-                        val info = homeInfo.results?.toMutableList()?.get(index)
+                        val info = homeInfo.itemTypes?.toMutableList()?.get(index)
                          answerQuestion = mutableListOf(
-                            info?.incorrect_answers?.get(0),
-                            info?.incorrect_answers?.get(1),
-                            info?.incorrect_answers?.get(2),
-                            info?.correct_answer
+                            info?.incorrectAnswers?.get(0),
+                            info?.incorrectAnswers?.get(1),
+                            info?.incorrectAnswers?.get(2),
+                            info?.correctAnswer
                         ).shuffled().toMutableList()
-                        correctAnswer = info?.correct_answer.toString()
+                        correctAnswer = info?.correctAnswer.toString()
                         activity?.runOnUiThread {
                             binding?.textQuestion?.text = info?.question
                             binding?.textFirstAnswer?.text = answerQuestion[0]
@@ -68,7 +77,7 @@ class QuestionFragment: BaseFragment<FragmentQuestionsBinding>() {
                             isEnabledButton(value = false)
                         }
                         index++
-                        println(info?.correct_answer!!)
+                        println(info?.correctAnswer!!)
                     }
 
 
@@ -152,5 +161,72 @@ class QuestionFragment: BaseFragment<FragmentQuestionsBinding>() {
         println("POINTS: $point")
 
     }
+
+
+
+
+    /////////////////////////////////
+    //////////////////////////////
+    /////////////////////////////
+    ///////////////////////////
+    /////////////////////////
+    //////////////////////
+    ///////////////////
+    ////////////////
+    ///////////////
+    /////////////////
+    ///////////////////
+    //////////////////////
+    ///////////////////////////
+    /////////////////////////////
+    ///////////////////////////////
+    /////////////////////////////////
+//  Data.getResultForQuiz().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe()
+
+    private fun getResultForQuiz(){
+        disposable.add(
+            Data.getResultForQuiz()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe()
+        )
+    } // emitter the Data*
+    private fun onQuizResult(response: State<TriviaResult>){
+        when(response){
+            is State.Error -> {
+                binding?.imageError?.show()//here View is adding for show image , so i hope u can edit it
+            }
+            is State.Loading -> {
+                binding?.progressLoading?.show()//here View is adding for show progress bar
+            }
+            is State.Success -> {
+                bindData(response.data)
+            }
+        }
+    }//show think depending on the state>
+    private fun View.show() {
+        this.visibility = View.VISIBLE
+    }//show  the progress bar and Image>
+    private fun View.hide() {
+        this.visibility = View.GONE
+    }//hide the progress bar and Image>
+    private fun hideAllViews(){
+        binding?.imageError?.hide()
+        binding?.progressLoading?.hide()
+        binding?.textMaxTemp?.hide()
+    }
+    private fun bindData(data: TriviaResult){
+        binding?.textQuestion?.text = data.question
+        binding?.textFirstAnswer?.text = answerQuestion[0]
+        binding?.textSecondAnswer?.text = answerQuestion[1]
+        binding?.textThirdAnswer?.text = answerQuestion[2]
+        binding?.textFourthAnswer?.text = answerQuestion[3]
+    }//bind Data for Views*
+    override fun onDestroy() {
+        super.onDestroy()
+        disposable.dispose()
+    }//to Destroy the Disposable Variable
+
+
 
 }
