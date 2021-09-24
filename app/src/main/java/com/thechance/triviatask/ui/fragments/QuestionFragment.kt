@@ -10,7 +10,7 @@ import com.thechance.triviatask.R
 import com.thechance.triviatask.data.Data
 import com.thechance.triviatask.data.State
 import com.thechance.triviatask.databinding.FragmentQuestionsBinding
-import com.thechance.triviatask.util.Constatnt
+import com.thechance.triviatask.util.Constant
 import com.thechance.triviatask.util.model.TriviaQuestion
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -19,7 +19,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 
 class QuestionFragment : BaseFragment<FragmentQuestionsBinding>() {
     private val disposable: CompositeDisposable = CompositeDisposable()
-
+    private var numberOfQuiz = "03"
     private var index: Int = 0
     private var point: Int = 0
     private var correctAnswer = ""
@@ -29,19 +29,23 @@ class QuestionFragment : BaseFragment<FragmentQuestionsBinding>() {
         FragmentQuestionsBinding::inflate
 
     override fun setup() {
+        numberOfQuiz = arguments?.getString(Constant.KEY_QUESTION_NUMBER).toString()
+        Log.i("SECOND_LOG",numberOfQuiz)
 //        showInfo()
         getResultForQuiz()
         getNextQuestion()
         getCorrectAnswer()
     }
 
+
     override fun addCallBack() {
     }
+
 
     private fun displayWinFragment() {
         val winFragment = WinFragment()
         val bundle = Bundle()
-        bundle.putInt(Constatnt.POINTS, point)
+        bundle.putInt(Constant.POINTS, point)
         winFragment.arguments = bundle
         requireActivity().supportFragmentManager.beginTransaction()
             .add(R.id.container, winFragment)
@@ -118,9 +122,12 @@ class QuestionFragment : BaseFragment<FragmentQuestionsBinding>() {
             Data.getResultForQuiz()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(::onQuizResult)
+                .subscribe(::onQuizResult,::onError)
         )
     } // emitter the Data*
+    private fun onError(e:Throwable){
+        Log.i("onError",e.message.toString())
+    }
 
     private fun onQuizResult(response: State<TriviaQuestion>) {
         hideAllViews()
@@ -135,7 +142,7 @@ class QuestionFragment : BaseFragment<FragmentQuestionsBinding>() {
                 bindData(response.data)
             }
         }
-    }//show thinks depending on the state>
+    }//show think depending on the state>
 
     private fun View.show() {
         this.visibility = View.VISIBLE
@@ -152,14 +159,15 @@ class QuestionFragment : BaseFragment<FragmentQuestionsBinding>() {
 
     @SuppressLint("SetTextI18n")
     private fun bindData(data: TriviaQuestion) {
-        if (index >= 10)
+        if (index >= numberOfQuiz.toInt())
         {displayWinFragment()}
         else {
-            val  answerQuestion = mutableListOf(data.itemTypes?.get(index)?.correctAnswer.toString(),
-                data.itemTypes?.get(index)?.incorrectAnswers?.get(0),
-                data.itemTypes?.get(index)?.incorrectAnswers?.get(1),
-                data.itemTypes?.get(index)?.incorrectAnswers?.get(2)
-            ).shuffled().toMutableList()
+        val  answerQuestion = mutableListOf(data.itemTypes?.get(index)?.correctAnswer.toString(),
+            data.itemTypes?.get(index)?.incorrectAnswers?.get(0),
+            data.itemTypes?.get(index)?.incorrectAnswers?.get(1),
+            data.itemTypes?.get(index)?.incorrectAnswers?.get(2)
+        ).shuffled().toMutableList()
+            Log.i("Ibraaa","$index + ${numberOfQuiz.toInt()}")
             binding?.textQuestion?.text = data.itemTypes?.get(index)?.question
             binding?.textFirstAnswer?.text = answerQuestion[0].toString()
             binding?.textSecondAnswer?.text = answerQuestion[1].toString()
@@ -177,4 +185,5 @@ class QuestionFragment : BaseFragment<FragmentQuestionsBinding>() {
         super.onDestroy()
         disposable.dispose()
     }//to Destroy the Disposable Variable
+
 }

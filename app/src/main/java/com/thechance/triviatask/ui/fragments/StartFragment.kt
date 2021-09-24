@@ -38,14 +38,12 @@ class StartFragment : BaseFragment<FragmentStartBinding>() {
 
         binding?.apply {
             quizNumber = amountEditText.editText?.text.toString()
-            categoryEditText.editText?.text.toString()
             setSpinner.setOnItemClickListener { _, _, i, _ ->
                 difficulty = UrlModifier.difficultyList[i]
             }
             UrlModifier.getUrl(
                 amountEditText.editText?.text.toString(),
-                categoryEditText.editText?.text.toString(),
-//                difficulty,
+                difficulty,
             )
         }
         val myArgument = bundle.apply {

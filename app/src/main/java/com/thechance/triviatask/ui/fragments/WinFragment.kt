@@ -29,9 +29,9 @@ class WinFragment: BaseFragment<FragmentWinningBinding>() {
     }
 
     private fun restartGame() {
-        val questionFragment = QuestionFragment()
+        val startFragment = StartFragment()
         requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.container,questionFragment)
+            .replace(R.id.container,startFragment)
             .addToBackStack(null)
             .commit()
     }
