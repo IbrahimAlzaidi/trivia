@@ -9,7 +9,7 @@ import okhttp3.Request
 
 object Network {
     private val client = OkHttpClient()
-    private const val baseUrl = "https://opentdb.com/api.php?amount=5&difficulty=hard&type=multiple"
+    private const val baseUrl = "https://opentdb.com/api.php?amount=10&difficulty=hard&type=multiple"
     private val gson = Gson()
     fun makeRequestUsingOkhttp(): State<TriviaQuestion> {
         val request = Request.Builder().url(baseUrl).build()

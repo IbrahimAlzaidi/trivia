@@ -2,6 +2,7 @@ package com.thechance.triviatask.ui.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -22,7 +23,6 @@ class QuestionFragment : BaseFragment<FragmentQuestionsBinding>() {
     private var index: Int = 0
     private var point: Int = 0
     private var correctAnswer = ""
-    private var answerQuestion = mutableListOf<String?>()
     override val LOG_TAG: String
         get() = javaClass.simpleName
     override val bindingInflater: (LayoutInflater) -> FragmentQuestionsBinding =
@@ -135,7 +135,7 @@ class QuestionFragment : BaseFragment<FragmentQuestionsBinding>() {
                 bindData(response.data)
             }
         }
-    }//show think depending on the state>
+    }//show thinks depending on the state>
 
     private fun View.show() {
         this.visibility = View.VISIBLE
@@ -152,15 +152,25 @@ class QuestionFragment : BaseFragment<FragmentQuestionsBinding>() {
 
     @SuppressLint("SetTextI18n")
     private fun bindData(data: TriviaQuestion) {
-        answerQuestion.add(data.itemTypes?.get(index)?.incorrectAnswers?.get(index))
-        if (index >= 10) displayWinFragment() else {
-            binding?.textQuestion?.text = "Q${index}- ${data.itemTypes?.get(index)?.question}"
-            binding?.textFirstAnswer?.text = "1- ${data.itemTypes?.get(index)?.correctAnswer}"
-            binding?.textSecondAnswer?.text = "2- ${data.itemTypes?.get(index)?.incorrectAnswers?.get(0)}"
-            binding?.textThirdAnswer?.text = "3- ${data.itemTypes?.get(index)?.incorrectAnswers?.get(1)}"
-            binding?.textFourthAnswer?.text = "4- ${data.itemTypes?.get(index)?.incorrectAnswers?.get(2)}"
-            binding?.textPoints?.text = point.toString()
+        if (index >= 10)
+        {displayWinFragment()}
+        else {
+            val  answerQuestion = mutableListOf(data.itemTypes?.get(index)?.correctAnswer.toString(),
+                data.itemTypes?.get(index)?.incorrectAnswers?.get(0),
+                data.itemTypes?.get(index)?.incorrectAnswers?.get(1),
+                data.itemTypes?.get(index)?.incorrectAnswers?.get(2)
+            ).shuffled().toMutableList()
+            binding?.textQuestion?.text = data.itemTypes?.get(index)?.question
+            binding?.textFirstAnswer?.text = answerQuestion[0].toString()
+            binding?.textSecondAnswer?.text = answerQuestion[1].toString()
+            binding?.textThirdAnswer?.text = answerQuestion[2].toString()
+            binding?.textFourthAnswer?.text = answerQuestion[3].toString()
+            binding?.textPoints?.text = (index).toString()
+            //println(data.itemTypes?.get(index)?.correctAnswer.toString())
+            isEnabledButton(true)
+            getCorrectAnswer()
         }
+        index++
     }//bind Data for Views*
 
     override fun onDestroy() {
