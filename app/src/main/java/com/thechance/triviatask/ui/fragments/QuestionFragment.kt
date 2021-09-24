@@ -2,6 +2,7 @@ package com.thechance.triviatask.ui.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -9,7 +10,7 @@ import com.thechance.triviatask.R
 import com.thechance.triviatask.data.Data
 import com.thechance.triviatask.data.State
 import com.thechance.triviatask.databinding.FragmentQuestionsBinding
-import com.thechance.triviatask.util.Constatnt
+import com.thechance.triviatask.util.Constant
 import com.thechance.triviatask.util.model.TriviaQuestion
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -18,30 +19,33 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 
 class QuestionFragment : BaseFragment<FragmentQuestionsBinding>() {
     private val disposable: CompositeDisposable = CompositeDisposable()
-
+    private var numberOfQuiz = "1"
     private var index: Int = 0
     private var point: Int = 0
     private var correctAnswer = ""
-    private var answerQuestion = mutableListOf<String?>()
     override val LOG_TAG: String
         get() = javaClass.simpleName
     override val bindingInflater: (LayoutInflater) -> FragmentQuestionsBinding =
         FragmentQuestionsBinding::inflate
 
     override fun setup() {
+        numberOfQuiz = arguments?.getString(Constant.KEY_QUESTION_NUMBER).toString()
+        Log.i("SECOND_LOG",numberOfQuiz)
 //        showInfo()
         getResultForQuiz()
         getNextQuestion()
         getCorrectAnswer()
     }
 
+
     override fun addCallBack() {
     }
+
 
     private fun displayWinFragment() {
         val winFragment = WinFragment()
         val bundle = Bundle()
-        bundle.putInt(Constatnt.POINTS, point)
+        bundle.putInt(Constant.POINTS, point)
         winFragment.arguments = bundle
         requireActivity().supportFragmentManager.beginTransaction()
             .add(R.id.container, winFragment)
@@ -118,9 +122,12 @@ class QuestionFragment : BaseFragment<FragmentQuestionsBinding>() {
             Data.getResultForQuiz()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(::onQuizResult)
+                .subscribe(::onQuizResult,::onError)
         )
     } // emitter the Data*
+    private fun onError(e:Throwable){
+        Log.i("onError",e.message.toString())
+    }
 
     private fun onQuizResult(response: State<TriviaQuestion>) {
         hideAllViews()
@@ -152,19 +159,28 @@ class QuestionFragment : BaseFragment<FragmentQuestionsBinding>() {
 
     @SuppressLint("SetTextI18n")
     private fun bindData(data: TriviaQuestion) {
-        answerQuestion.add(data.itemTypes?.get(index)?.incorrectAnswers?.get(index))
-        if (index >= 10) displayWinFragment() else {
-            binding?.textQuestion?.text = "Q${index}- ${data.itemTypes?.get(index)?.question}"
-            binding?.textFirstAnswer?.text = "1- ${data.itemTypes?.get(index)?.correctAnswer}"
-            binding?.textSecondAnswer?.text = "2- ${data.itemTypes?.get(index)?.incorrectAnswers?.get(0)}"
-            binding?.textThirdAnswer?.text = "3- ${data.itemTypes?.get(index)?.incorrectAnswers?.get(1)}"
-            binding?.textFourthAnswer?.text = "4- ${data.itemTypes?.get(index)?.incorrectAnswers?.get(2)}"
-            binding?.textPoints?.text = point.toString()
+        val  answerQuestion = mutableListOf(data.itemTypes?.get(index)?.correctAnswer.toString(),
+            data.itemTypes?.get(index)?.incorrectAnswers?.get(0),
+            data.itemTypes?.get(index)?.incorrectAnswers?.get(1),
+            data.itemTypes?.get(index)?.incorrectAnswers?.get(2)
+        ).shuffled().toMutableList()
+        if (index >= numberOfQuiz.toInt()) displayWinFragment() else {
+            binding?.textQuestion?.text = data.itemTypes?.get(index)?.question
+            binding?.textFirstAnswer?.text = answerQuestion[0].toString()
+            binding?.textSecondAnswer?.text = answerQuestion[1].toString()
+            binding?.textThirdAnswer?.text = answerQuestion[2].toString()
+            binding?.textFourthAnswer?.text = answerQuestion[3].toString()
+            binding?.textPoints?.text = (index).toString()
+            //println(data.itemTypes?.get(index)?.correctAnswer.toString())
+            isEnabledButton(true)
+            getCorrectAnswer()
         }
+        index++
     }//bind Data for Views*
 
     override fun onDestroy() {
         super.onDestroy()
         disposable.dispose()
     }//to Destroy the Disposable Variable
+
 }

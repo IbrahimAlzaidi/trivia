@@ -3,4 +3,6 @@
     <string name="wanna_hear_a_song">wanna hear a song?</string>
     <string name="explain">You Made it!! , congratss!\nWe don\'t have losers here; everyone is a winner.here, have a cup of coffee</string>
     <string name="next">Next</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
